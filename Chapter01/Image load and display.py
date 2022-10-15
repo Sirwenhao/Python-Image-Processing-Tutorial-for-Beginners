@@ -66,3 +66,31 @@ from scipy import misc
 # plt.axis('off'), imshow(im), show()
 # viewer = viewer.ImageViewer(im)
 # viewer.show()
+
+# im = data.astronaut()
+# imshow(im), show()
+
+# 使用SciPy的misc模块读取、保存和显示图像
+# im = misc.face()
+# imsave('Chapter01\images\\face.png', im)
+# plt.imshow(im), plt.axis('off'), plt.show()
+
+# 使用misc.imread从磁盘加载图像
+# im = imread('Chapter01\images\pepper.jpg')
+# print(type(im), im.shape, im.dtype)
+
+# 使用imageio.imread()，并使用matplotlib显示图像
+# import imageio
+# im = imageio.imread('Chapter01\images\pepper.jpg')
+# print(type(im), im.shape, im.dtype)
+# plt.imshow(im), plt.axis('off'), plt.show()
+
+# 将图像从RGB空间转换到HSV空间
+im = imread('Chapter01\images\parrot.jpg')
+im_hsv = color.rgb2hsv(im)
+plt.gray()
+plt.figure(figsize=(10,8))
+plt.subplot(221), plt.imshow(im_hsv[...,0]),plt.title('h', size=20),plt.axis('off')
+# plt.subplot(222), plt.imshow(im_hsv[...,1]),plt.title('s', size=20),plt.axis('off')
+# plt.subplot(223), plt.imshow(im_hsv[...,2]),plt.title('v', size=20),plt.axis('off')
+plt.subplot(224), plt.axis('off'), plt.show()
