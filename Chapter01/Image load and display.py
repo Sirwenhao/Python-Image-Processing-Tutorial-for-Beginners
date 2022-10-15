@@ -86,11 +86,47 @@ from scipy import misc
 # plt.imshow(im), plt.axis('off'), plt.show()
 
 # 将图像从RGB空间转换到HSV空间
-im = imread('Chapter01\images\parrot.jpg')
-im_hsv = color.rgb2hsv(im)
-plt.gray()
-plt.figure(figsize=(10,8))
-plt.subplot(221), plt.imshow(im_hsv[...,0]),plt.title('h', size=20),plt.axis('off')
+# im = imread('Chapter01\images\parrot.jpg')
+# im_hsv = color.rgb2hsv(im)
+# plt.gray()
+# plt.figure(figsize=(10,8))
+# plt.subplot(221), plt.imshow(im_hsv[...,0]),plt.title('h', size=20),plt.axis('off')
 # plt.subplot(222), plt.imshow(im_hsv[...,1]),plt.title('s', size=20),plt.axis('off')
 # plt.subplot(223), plt.imshow(im_hsv[...,2]),plt.title('v', size=20),plt.axis('off')
-plt.subplot(224), plt.axis('off'), plt.show()
+# plt.subplot(224), plt.axis('off'), plt.show()
+
+# 转换图像的数据结构,从PIL的Image对象转换为numpy的ndarray结构
+# im = Image.open('Chapter01\images\\flower.jpg')
+# im = np.array(im)
+# imshow(im)
+# plt.axis('off'), show()
+# # 从ndarray转换为Image结构
+# im = imread('Chapter01\images\\flower.jpg')
+# im = Image.fromarray(im)
+# im.show()
+
+# 使用numpy数组的切片进行图像处理
+# lena = mpimg.imread('Chapter01\images\Lenna.jpg')
+# # print(lena[0, 40])
+# # print(lena[10:13, 20:23, 0:1])
+# # print(lena.shape) # (316, 316, 3)
+# lx, ly, _ = lena.shape
+# x, y = np.ogrid[0:lx, 0:ly]
+# mask = (x - lx/2)**2 + (y - ly/2)**2 > lx * ly / 4
+# lena[mask, :] = 0
+# plt.figure(figsize=(10, 10))
+# plt.imshow(lena), plt.axis('off'), plt.show()
+
+# 使用交叉溶解的两个图像的α混合
+# im1 = mpimg.imread('Chapter01\images\Lenna.jpg') / 255
+# im2 = mpimg.imread('Chapter01\images\parrot.jpg') /255
+# im2.resize(316, 316, 3)
+# i = 1
+# plt.figure(figsize=(18, 15))
+# for alpha in np.linspace(0, 1, 20):
+#     plt.subplot(4,5,i)
+#     plt.imshow((1-alpha)*im1 + alpha*im2)
+#     plt.axis('off')
+#     i += 1
+# plt.subplots_adjust(wspace=0.05, hspace=0.05)
+# plt.show()
