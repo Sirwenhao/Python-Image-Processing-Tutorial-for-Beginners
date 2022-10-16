@@ -130,3 +130,60 @@ from scipy import misc
 #     i += 1
 # plt.subplots_adjust(wspace=0.05, hspace=0.05)
 # plt.show()
+
+# 使用PIL进行图像处理
+# im = Image.open('Chapter01\images\parrot.jpg')
+# print(im.width, im.height, im.mode, im.format)
+
+# 使用PIL执行不同类型的图像操作
+
+# 裁剪图像
+# im_c = im.crop((1750,750,3200,2000))
+# im_c.show()
+
+# 调整图像的尺寸
+# im = Image.open('Chapter01\images\clock.jpg')
+# print(im.width, im.height)
+# im.show()
+# im_large = im.resize((im.width*5, im.height*5), Image.BILINEAR)
+# im_large.show()
+# im_small = im.resize((im.width//5, im.height//5), Image.ANTIALIAS)
+# print(im_small.width, im_small.height)
+# im_small.show()
+
+# 图像负片
+im = Image.open('Chapter01\images\parrot.jpg')
+# im_t = im.point(lambda x: 255-x)
+# im_t.show()
+# 转换为灰度图像
+# im_g = im.convert('L')
+# im_g.show()
+
+# 灰度级变换
+# im_g.point(lambda x: 255*np.log(1+x/255)).show()
+# 幂律变换
+# im_g.point(lambda x: 255*(x/255)**0.6).show()
+
+# 计算图像的基本统计信息
+# s = stat.Stat(im)
+# print(s.extrema)
+# print(s.count)
+# print(s.mean)
+# print(s.median)
+# print(s.stddev)
+
+# 绘制图像的RGB通道的像素值的直方图，histogram()函数用于统计每个通道像素的直方图（像素值与频率表）
+# pl = im.histogram()
+# plt.bar(range(256), pl[:256], color='r', alpha=0.5)
+# plt.bar(range(256), pl[256:2*256], color='g', alpha=0.4)
+# plt.bar(range(256), pl[256*2:], color='b', alpha=0.3)
+# plt.show()
+
+# 分离图像的RGB三个颜色通道,split()函数
+ch_r, ch_g, ch_b = im.split()
+plt.figure(figsize=(18, 6))
+plt.subplot(1,3,1), plt.imshow(ch_r, cmap=plt.cm.Reds), plt.axis('off')
+plt.subplot(1,3,2), plt.imshow(ch_g, cmap=plt.cm.Greens), plt.axis('off')
+plt.subplot(1,3,3), plt.imshow(ch_b, cmap=plt.cm.Blues), plt.axis('off')
+plt.tight_layout()
+plt.show()
