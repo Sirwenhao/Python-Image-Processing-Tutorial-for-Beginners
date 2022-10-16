@@ -18,7 +18,8 @@ r1 = Image.fromarray((np.reshape(np.interp(np.array(r).ravel(), r_old, r_new),
                                  (im.height, im.width))).astype(np.uint8), mode='L')
 
 plt.figure(figsize=(200,150))
-plt.subplot(221)
+plt.subplot(221) # plt.subplot(nrows, ncols, index, **kwargs)=plt.subplot(nrows ncols index)(使用时不加空格，这里为了区分)
+# plt.subplot(221)相当于plt.subplot(2,2,1)数字代表绘制图像的位置，第一个数字代表行数，第二个数字代表列数，第三个数字表示索引
 plt.imshow(im)
 plt.title('original', size=20)
 plt.axis('off')
