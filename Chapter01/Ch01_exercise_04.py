@@ -12,7 +12,7 @@ def swirl(xy, x0, y0, R):
     xy[:, 0] = -(xy[:, 1]-x0)*np.sin(a) + (xy[:, 0]-y0)*np.cos(a) + y0
     return xy
 
-im = imread('Chapter01\images\mandrill.jpg')
+im = imread('Chapter01\Ch01images\mandrill.jpg')
 print(im.shape)
 im1 = warp(im, swirl, map_args={'x0':1000, 'y0':1000, 'R':100})
 plt.figure(figsize=(2000, 2000))

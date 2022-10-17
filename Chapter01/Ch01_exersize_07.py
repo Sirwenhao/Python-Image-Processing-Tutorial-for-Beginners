@@ -17,7 +17,7 @@ def plot_3d(X,Y,Z, cmap='Reds', title=''):
     ax.set_title(title, size=20)
     plt.show()
 
-im = imread('Chapter01\images\parrot.jpg')
+im = imread('Chapter01\Ch01images\parrot.jpg')
 Y = np.arange(im.shape[0])
 X = np.arange(im.shape[1])
 X, Y = np.meshgrid(X, Y)

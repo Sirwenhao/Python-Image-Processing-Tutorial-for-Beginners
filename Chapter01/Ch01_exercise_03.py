@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pylab as plt
 
-im = Image.open('Chapter01\images\\flower.jpg')
+im = Image.open('Chapter01\Ch01images\\flower.jpg')
 print(np.max(im))
 plt.figure(figsize=(200, 200))
 plt.imshow(im)

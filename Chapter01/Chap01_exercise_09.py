@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pylab as plt
 from matplotlib.path import Path
 
-im_src = imread('Chapter01\images\Lenna.jpg')
-im_dst = imread('Chapter01\images\shutterstock.jpg')
+im_src = imread('Chapter01\Ch01images\Lenna.jpg')
+im_dst = imread('Chapter01\Ch01images\shutterstock.jpg')
 print(im_src.shape, im_dst.shape)
 
 pt = ProjectiveTransform()
