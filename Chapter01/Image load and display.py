@@ -14,17 +14,17 @@ from scipy.ndimage import affine_transform, zoom
 from scipy import misc
 
 # # 使用PIL读取、保存和显示图像
-# im = Image.open('Chapter01\images\parrot.jpeg')
+# im = Image.open('Chapter01\Ch01images\parrot.jpeg')
 # print(im.width, im.height, im.mode, im.format, type(im))
 # # 5464 8192 RGB JPEG <class 'PIL.JpegImagePlugin.JpegImageFile'>
 # im.show()
 # im_g = im.convert('L')
-# im_g.save('Chapter01\images\parrot_gray.png')
-# Image.open('Chapter01\images\parrot_gray.png').show()
+# im_g.save('Chapter01\Ch01images\parrot_gray.png')
+# Image.open('Chapter01\Ch01images\parrot_gray.png').show()
 
 
 # # 使用matplotlib读取、保存和显示图像
-# im = mpimg.imread('Chapter01\images\hill.jpg')
+# im = mpimg.imread('Chapter01\Ch01\images\hill.jpg')
 # print(im.shape, im.dtype, type(im))
 # plt.figure(figsize=(8,8))
 # plt.imshow(im)
@@ -35,8 +35,8 @@ from scipy import misc
 # plt.imshow(im_1)
 # plt.axis('off')
 # plt.tight_layout()
-# plt.savefig('Chapter01\images\hill_dark.jpg')
-# im = mpimg.imread('Chapter01\images\hill_dark.jpg')
+# plt.savefig('Chapter01\Ch01images\hill_dark.jpg')
+# im = mpimg.imread('Chapter01\Ch01images\hill_dark.jpg')
 # plt.figure(figsize=(10, 10))
 # plt.imshow(im)
 # plt.axis('off')
@@ -45,7 +45,7 @@ from scipy import misc
 
 
 # # 使用matplotlib imshow()在显示时插值
-# im = mpimg.imread('Chapter01\images\Lenna.jpg')
+# im = mpimg.imread('Chapter01\Ch01images\Lenna.jpg')
 # methods = ['none', 'nearest','bilinear','bicubic','spline16','lanczos']
 # fig, axes = plt.subplots(nrows=2,ncols=3,figsize=(8,16),subplot_kw={'xticks':[],'yticks':[]})
 # fig.subplots_adjust(hspace=0.1,wspace=0.1)
@@ -56,13 +56,13 @@ from scipy import misc
 # plt.show()
 
 # 使用scikit-image读取、保存和显示图像
-# im = imread('Chapter01\images\parrot.jpeg')
+# im = imread('Chapter01\Ch01images\parrot.jpeg')
 # print(im.shape, im.dtype, type(im))
 # hsv = color.rgb2hsv(im)
 # hsv[:,:,1] = 0.5
 # im1 = color.hsv2rgb(hsv)
-# imsave('Chapter01\images\parrot_hsv.png', im1)
-# im=imread('Chapter01\images\parrot_hsv.png')
+# imsave('Chapter01\Ch01images\parrot_hsv.png', im1)
+# im=imread('Chapter01\Ch01images\parrot_hsv.png')
 # plt.axis('off'), imshow(im), show()
 # viewer = viewer.ImageViewer(im)
 # viewer.show()
@@ -72,21 +72,21 @@ from scipy import misc
 
 # 使用SciPy的misc模块读取、保存和显示图像
 # im = misc.face()
-# imsave('Chapter01\images\\face.png', im)
+# imsave('Chapter01\Ch01images\\face.png', im)
 # plt.imshow(im), plt.axis('off'), plt.show()
 
 # 使用misc.imread从磁盘加载图像
-# im = imread('Chapter01\images\pepper.jpg')
+# im = imread('Chapter01\Ch01images\pepper.jpg')
 # print(type(im), im.shape, im.dtype)
 
 # 使用imageio.imread()，并使用matplotlib显示图像
 # import imageio
-# im = imageio.imread('Chapter01\images\pepper.jpg')
+# im = imageio.imread('Chapter01\Ch01images\pepper.jpg')
 # print(type(im), im.shape, im.dtype)
 # plt.imshow(im), plt.axis('off'), plt.show()
 
 # 将图像从RGB空间转换到HSV空间
-# im = imread('Chapter01\images\parrot.jpg')
+# im = imread('Chapter01\Ch01images\parrot.jpg')
 # im_hsv = color.rgb2hsv(im)
 # plt.gray()
 # plt.figure(figsize=(10,8))
@@ -96,17 +96,17 @@ from scipy import misc
 # plt.subplot(224), plt.axis('off'), plt.show()
 
 # 转换图像的数据结构,从PIL的Image对象转换为numpy的ndarray结构
-# im = Image.open('Chapter01\images\\flower.jpg')
+# im = Image.open('Chapter01\Ch01images\\flower.jpg')
 # im = np.array(im)
 # imshow(im)
 # plt.axis('off'), show()
 # # 从ndarray转换为Image结构
-# im = imread('Chapter01\images\\flower.jpg')
+# im = imread('Chapter01\Ch01images\\flower.jpg')
 # im = Image.fromarray(im)
 # im.show()
 
 # 使用numpy数组的切片进行图像处理
-# lena = mpimg.imread('Chapter01\images\Lenna.jpg')
+# lena = mpimg.imread('Chapter01\Ch01images\Lenna.jpg')
 # # print(lena[0, 40])
 # # print(lena[10:13, 20:23, 0:1])
 # # print(lena.shape) # (316, 316, 3)
@@ -118,8 +118,8 @@ from scipy import misc
 # plt.imshow(lena), plt.axis('off'), plt.show()
 
 # 使用交叉溶解的两个图像的α混合
-# im1 = mpimg.imread('Chapter01\images\Lenna.jpg') / 255
-# im2 = mpimg.imread('Chapter01\images\parrot.jpg') /255
+# im1 = mpimg.imread('Chapter01\Ch01images\Lenna.jpg') / 255
+# im2 = mpimg.imread('Chapter01\Ch01images\parrot.jpg') /255
 # im2.resize(316, 316, 3)
 # i = 1
 # plt.figure(figsize=(18, 15))
@@ -132,7 +132,7 @@ from scipy import misc
 # plt.show()
 
 # 使用PIL进行图像处理
-# im = Image.open('Chapter01\images\parrot.jpg')
+# im = Image.open('Chapter01\Ch01images\parrot.jpg')
 # print(im.width, im.height, im.mode, im.format)
 
 # 使用PIL执行不同类型的图像操作
@@ -142,7 +142,7 @@ from scipy import misc
 # im_c.show()
 
 # 调整图像的尺寸
-# im = Image.open('Chapter01\images\clock.jpg')
+# im = Image.open('Chapter01\Ch01images\clock.jpg')
 # print(im.width, im.height)
 # im.show()
 # im_large = im.resize((im.width*5, im.height*5), Image.BILINEAR)
@@ -152,7 +152,7 @@ from scipy import misc
 # im_small.show()
 
 # 图像负片
-im = Image.open('Chapter01\images\parrot.jpg')
+im = Image.open('Chapter01\Ch01images\parrot.jpg')
 # im_t = im.point(lambda x: 255-x)
 # im_t.show()
 # 转换为灰度图像
