@@ -30,3 +30,14 @@ pylab.figure(figsize=(15, 5))
 pylab.subplot(121), plot_image(im, 'original image')
 pylab.subplot(122), plot_hist(im_r, im_g, im_b, 'historam for RGB channels')
 pylab.show()
+
+
+# 使用PIL的point()函数进行对数变换
+im = im.point(lambda i: 255*np.log(1+i/255))
+im_r, im_g, im_b = im.split()
+pylab.style.use('ggplot')
+pylab.figure(figsize=(15, 5))
+pylab.subplot(121), plot_image(im, 'image after log transform')
+pylab.subplot(122), plot_hist(im_r, im_g, im_b, 'histogram of RGB channels log transform')
+pylab.show()
+
