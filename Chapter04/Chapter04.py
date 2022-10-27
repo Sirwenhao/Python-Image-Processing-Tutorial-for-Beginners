@@ -11,9 +11,9 @@ from scipy import ndimage, misc
 import matplotlib.pylab as pylab
 
 # # # 实现输入图像的颜色通道直方图
-# def plot_image(image, title=''):
-#     pylab.title(title, size=10), pylab.imshow(image)
-#     pylab.axis('off')
+def plot_image(image, title=''):
+    pylab.title(title, size=10), pylab.imshow(image)
+    pylab.axis('off')
 
 # def plot_hist(r, g, b, title=''):
 #     r, g, b = img_as_ubyte(r), img_as_ubyte(g), img_as_ubyte(b)
@@ -115,54 +115,74 @@ import matplotlib.pylab as pylab
 # pylab.show()
 
 # 基于误差扩散的Floyd-Steinberg抖动
-import cv2
-import matplotlib.pyplot as plt
+# import cv2
+# import matplotlib.pyplot as plt
 
-img_gray = cv2.imread('Chapter04\Ch04images\swans.jpg', cv2.IMREAD_GRAYSCALE)
-img_gray0 = 255 - img_gray
-h, w = img_gray0.shape
-img_gray0 =cv2.resize(img_gray0, (w//2, h//2))
-h,w =img_gray0.shape
-plt.figure()
-plt.imshow(img_gray0, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
-plt.title("Original Image")
-img_gray_eq = img_gray0
-img_dither =np.zeros((h+1, w+1), dtype=np.float)
-img_undither = np.zeros((h, w), dtype=np.uint8)
+# img_gray = cv2.imread('Chapter04\Ch04images\swans.jpg', cv2.IMREAD_GRAYSCALE)
+# img_gray0 = 255 - img_gray
+# h, w = img_gray0.shape
+# img_gray0 =cv2.resize(img_gray0, (w//2, h//2))
+# h,w =img_gray0.shape
+# plt.figure()
+# plt.imshow(img_gray0, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
+# plt.title("Original Image")
+# img_gray_eq = img_gray0
+# img_dither =np.zeros((h+1, w+1), dtype=np.float)
+# img_undither = np.zeros((h, w), dtype=np.uint8)
 
-threshold = 128
+# threshold = 128
 
-for i in range(h):
-    for j in range(w):
-        img_dither[i, j] = img_gray_eq[i, j]
-        if img_gray_eq[i, j] > threshold:
-            img_undither[i, j] = 255
+# for i in range(h):
+#     for j in range(w):
+#         img_dither[i, j] = img_gray_eq[i, j]
+#         if img_gray_eq[i, j] > threshold:
+#             img_undither[i, j] = 255
 
-for i in range(h):
-    for j in range(w):
-        old_pix = img_dither[i, j]
-        if (img_dither[i, j] > threshold):
-            new_pix = 255
-        else:
-            new_pix = 0
+# for i in range(h):
+#     for j in range(w):
+#         old_pix = img_dither[i, j]
+#         if (img_dither[i, j] > threshold):
+#             new_pix = 255
+#         else:
+#             new_pix = 0
 
-        img_dither[i, j] = new_pix
-        quant_err = old_pix - new_pix
-        if j > 0:
-            img_dither[i+1, j-1] = img_dither[i+1, j-1] + quant_err * 3 / 16
-            img_dither[i+1, j] = img_dither[i+1, j] + quant_err * 5 / 16
-            img_dither[i, j+1] = img_dither[i, j+1] + quant_err * 7 / 16
-            img_dither[i+1, j+1] = img_dither[i+1, j+1] + quant_err * 1 / 16
+#         img_dither[i, j] = new_pix
+#         quant_err = old_pix - new_pix
+#         if j > 0:
+#             img_dither[i+1, j-1] = img_dither[i+1, j-1] + quant_err * 3 / 16
+#             img_dither[i+1, j] = img_dither[i+1, j] + quant_err * 5 / 16
+#             img_dither[i, j+1] = img_dither[i, j+1] + quant_err * 7 / 16
+#             img_dither[i+1, j+1] = img_dither[i+1, j+1] + quant_err * 1 / 16
 
-img_dither = img_dither.astype(np.uint8)
-img_dither = img_dither[0:h, 0:w]
+# img_dither = img_dither.astype(np.uint8)
+# img_dither = img_dither[0:h, 0:w]
 
-plt.figure()
-plt.imshow(img_dither, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
-plt.title("dither")
+# plt.figure()
+# plt.imshow(img_dither, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
+# plt.title("dither")
 
-plt.figure()
-plt.imshow(img_undither, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
-plt.title("undither")
+# plt.figure()
+# plt.imshow(img_undither, vmin=0, vmax=255, cmap=plt.get_cmap("Greys"))
+# plt.title("undither")
 
-plt.show()
+# plt.show()
+
+
+
+# # 基于scikit-image的对比度拉伸和直方图均衡化
+# img = rgb2gray(imread('Chapter01\Ch01images\earthfromsky.jpg'))
+# # histogram equalization
+# img_eq = exposure.equalize_hist(img)
+# # adaptive histogram equalization
+# img_adapteq = exposure.equalize_adapthist(img , clip_limit=0.03)
+# pylab.gray()
+# images = [img, img_eq, img_adapteq]
+# titles = ['Original input (earth from sky)', 'after histogram equalization', 'after adaptive histogram equalization']
+# for i in range(3):
+#     pylab.figure(figsize=(20, 10)), plot_image(images[i], titles[i])
+# pylab.figure(figsize=(15, 5))
+# for i in range(3):
+#     pylab.subplot(1, 3, i+1), pylab.hist(images[i].ravel(), color='g'),pylab.title(titles[i], size=10)
+# pylab.show()
+
+
