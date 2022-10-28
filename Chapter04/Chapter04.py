@@ -185,4 +185,51 @@ def plot_image(image, title=''):
 #     pylab.subplot(1, 3, i+1), pylab.hist(images[i].ravel(), color='g'),pylab.title(titles[i], size=10)
 # pylab.show()
 
+# 直方图匹配
 
+def cdf(im):
+    """
+    compute the CDF of an image im as 2D numpt ndarray
+    """
+    c, b = cumulative_distribution(im)
+    # pad the beginning and ending pixels and their CDF values
+    c = np.insert(c, 0, [0]*b[0])
+    c = np.append(c, [1]*(255-b[-1]))
+    return c
+
+def hist_matching(c, c_t, im):
+    """
+    c: CDF of input computed with the function cdf()
+    c_t: CDF of template image computed with the function cdf()
+    im: input image as 2D numpy ndarray
+    returns the modified pixel values for the input image
+    """
+    pixels = np.arange(256)
+    new_pixels = np.interp(c, c_t, pixels)
+    im = (np.reshape(new_pixels[im.ravel()], im.shape)).astype(np.uint8)
+    return im
+
+pylab.gray()
+im = (rgb2gray(imread('Chapter04\Ch04images\\beans.jpg'))*255).astype(np.uint8)
+im_t = (rgb2gray(imread('Chapter04\Ch04images\Lenna.jpg'))*255).astype(np.uint8)
+pylab.figure(figsize=(20, 12))
+pylab.subplot(2,3,1), plot_image(im, 'Input image')
+pylab.subplot(2,3,2), plot_image(im_t, 'Template image')
+c = cdf(im)
+c_t = cdf(im_t)
+pylab.subplot(2,3,3)
+p = np.arange(256)
+pylab.plot(p, c,'r.-',label='input')
+pylab.plot(p, c_t,'b.-',label='template')
+pylab.legend(prop={'size':10})
+pylab.title('CDF', size=10)
+im = hist_matching(c, c_t, im)
+pylab.subplot(2,3,4),plot_image(im,'Output image with Hist Matching')
+c1 = cdf(im)
+pylab.subplot(2,3,5)
+pylab.plot(np.arange(256), c, 'r.-', label='input')
+pylab.plot(np.arange(256), c_t, 'b.-', label='template')
+pylab.plot(np.arange(256), c1, 'g.-', label='output')
+pylab.legend(prop={'size':10})
+pylab.title('CDF',size=10)
+pylab.show()
