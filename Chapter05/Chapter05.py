@@ -94,16 +94,62 @@ def plot_image(image, title):
 # pylab.show()
 
 
-# scikit-image中的canny边缘检测器
-im = rgb2gray(imread('Chapter05\Ch05images\golden state bridge.jpg'))
-im = ndimage.gaussian_filter(im, 4)
-im += 0.05 * np.random.random(im.shape)
-edges1 = feature.canny(im)
-edges2 = feature.canny(im, sigma=3)
-fig, (axes1, axes2, axes3) = pylab.subplots(nrows=1, ncols=3, figsize=(20, 10), sharex=True, sharey=True)
-axes1.imshow(im, cmap=pylab.cm.gray), axes1.axis('off'), axes1.set_title('noisy image', fontsize=10)
-axes2.imshow(edges1, cmap=pylab.cm.gray), axes2.axis('off'), axes2.set_title('Canny filter, $\sigma=1$', fontsize=10)
-axes3.imshow(edges2, cmap=pylab.cm.gray), axes3.axis('off'), axes3.set_title('Canny filter, $\sigma=3$', fontsize=10)
-fig.tight_layout()
+# # scikit-image中的canny边缘检测器
+# im = rgb2gray(imread('Chapter05\Ch05images\golden state bridge.jpg'))
+# im = ndimage.gaussian_filter(im, 4)
+# im += 0.05 * np.random.random(im.shape)
+# edges1 = feature.canny(im)
+# edges2 = feature.canny(im, sigma=3)
+# fig, (axes1, axes2, axes3) = pylab.subplots(nrows=1, ncols=3, figsize=(20, 10), sharex=True, sharey=True)
+# axes1.imshow(im, cmap=pylab.cm.gray), axes1.axis('off'), axes1.set_title('noisy image', fontsize=10)
+# axes2.imshow(edges1, cmap=pylab.cm.gray), axes2.axis('off'), axes2.set_title('Canny filter, $\sigma=1$', fontsize=10)
+# axes3.imshow(edges2, cmap=pylab.cm.gray), axes3.axis('off'), axes3.set_title('Canny filter, $\sigma=3$', fontsize=10)
+# fig.tight_layout()
+# pylab.show()
+
+
+# LoG滤波器和DoG滤波器
+from scipy.signal import convolve2d
+from scipy.ndimage import gaussian_filter
+from numpy import pi
+
+def plot_kernel(kernel, s, name):
+    pylab.imshow(kernel, cmap='YlOrRd')
+
+# 定义LoG滤波器
+def LoG(k=12, s=3):
+    n = 2*k+1 # size of kernel
+    kernel = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            kernel[i, j] = -(1-((i-k)**2+(j-k)**2)/(2.*s**2))*np.exp(-((i-k)**2+(j-k)**2)/(2.*s**2))/(pi*s**4)
+    kernel = np.round(kernel / np.sqrt((kernel**2).sum()),3)
+    return kernel
+
+# 定义DoG滤波核
+def DoG(k=12, s=3):
+    n = 2*k+1 # size of the kernel
+    s1, s2 = s * np.sqrt(2), s / np.sqrt(2)
+    kernel = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            kernel[i, j] = np.exp(-((i-k)**2+(j-k)**2)/(2.*s1**2))/(2*pi*s1**2)
+            - np.exp(-((i-k)**2+(j-k)**2)/(2.*s2**2))/(2*pi*s2**2)
+    kernel = np.round(kernel/np.sqrt((kernel**2).sum()), 3)
+    return kernel
+
+s = 3 # sigma value of LoG
+im = rgb2gray(imread('Chapter05\Ch05images\dog.jpg'))
+kernel = LoG()
+outimg1 = convolve2d(im, kernel)
+pylab.subplot(221), pylab.title('LoG kernel', size=10), plot_kernel(kernel, s, 'LoG')
+pylab.subplot(222), pylab.title('Output image with LoG', size=10)
+pylab.imshow(np.clip(outimg1, 0, 1), cmap='gray') # clip the pixel values in between 0 and 1
+kernel = DoG()
+outimg2 = convolve2d(im, kernel)
+pylab.subplot(223), pylab.title('DoG kernel', size=10), plot_kernel(kernel, s, 'DoG')
+pylab.subplot(224), pylab.title('Output image with DoG', size=10)
+pylab.imshow(np.clip(outimg2, 0, 1), cmap='gray')
+pylab.tight_layout()
 pylab.show()
 
