@@ -76,4 +76,38 @@ $$
 
 ##### LoG滤波器和DoG滤波器
 
-高斯拉普拉斯滤波器（Laplacian of Gaussian，LoG）是一种线性滤波器，本质是对图像进行高斯滤波后紧接着使用拉普拉斯滤波器的组合
+高斯拉普拉斯滤波器（Laplacian of Gaussian，LoG）是一种线性滤波器，本质是对图像进行高斯滤波后紧接着使用拉普拉斯滤波器的组合。LoG滤波核中每一个位置上的数值大小的计算为：
+$$
+LoG(x,y) =  \nabla^2 G_{\sigma}(x,y)= \frac{\partial{G_{\sigma}(x,y)}}{\partial{x}} + \frac{\partial{G_{\sigma}(x,y)}}{\partial{y}}=\frac{1}{-\pi*{\sigma}^4}e^{-\frac{x^2+y^2}{2\sigma^2}}(1-\frac{x^2+y^2}{2\sigma^2})
+$$
+DoG滤波器的近似计算为：
+$$
+\nabla^2{G_\sigma}\approx G_{\sigma1} - G_{\sigma_2}\\\sigma_1=\sqrt{2}\sigma,\sigma_1=\frac{\sigma}{\sqrt2}
+$$
+两种滤波器实现代码为：
+
+```python
+# 2022/11/5 LoG滤波器实现
+def LoG(k=12, s=3):
+    n = 2*k+1 # size of kernel
+    kernel = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            kernel[i, j] = -(1-((i-k)**2+(j-k)**2)/(2.*s**2))*np.exp(-((i-k)**2+(j-k)**2)/(2.*s**2))/(pi*s**4)
+    kernel = np.round(kernel / np.sqrt((kernel**2).sum()),3)
+    return kernel
+
+
+# 2022/11/5 DoG滤波器实现
+def DoG(k=12, s=3):
+    n = 2*k+1 # size of the kernel
+    s1, s2 = s * np.sqrt(2), s / np.sqrt(2)
+    kernel = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            kernel[i, j] = np.exp(-((i-k)**2+(j-k)**2)/(2.*s1**2))/(2*pi*s1**2)
+            - np.exp(-((i-k)**2+(j-k)**2)/(2.*s2**2))/(2*pi*s2**2)
+    kernel = np.round(kernel/np.sqrt((kernel**2).sum()), 3)
+    return kernel
+```
+
