@@ -153,3 +153,6 @@ pylab.imshow(np.clip(outimg2, 0, 1), cmap='gray')
 pylab.tight_layout()
 pylab.show()
 
+
+
+
