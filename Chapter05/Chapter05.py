@@ -108,53 +108,102 @@ def plot_image(image, title):
 # pylab.show()
 
 
-# LoG滤波器和DoG滤波器
-from scipy.signal import convolve2d
-from scipy.ndimage import gaussian_filter
-from numpy import pi
+# # LoG滤波器和DoG滤波器
+# from scipy.signal import convolve2d
+# from scipy.ndimage import gaussian_filter
+# from numpy import pi
 
-def plot_kernel(kernel, s, name):
-    pylab.imshow(kernel, cmap='YlOrRd')
+# def plot_kernel(kernel, s, name):
+#     pylab.imshow(kernel, cmap='YlOrRd')
 
-# 定义LoG滤波器
-def LoG(k=12, s=3):
-    n = 2*k+1 # size of kernel
-    kernel = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            kernel[i, j] = -(1-((i-k)**2+(j-k)**2)/(2.*s**2))*np.exp(-((i-k)**2+(j-k)**2)/(2.*s**2))/(pi*s**4)
-    kernel = np.round(kernel / np.sqrt((kernel**2).sum()),3)
-    return kernel
+# # 定义LoG滤波器
+# def LoG(k=12, s=3):
+#     n = 2*k+1 # size of kernel
+#     kernel = np.zeros((n, n))
+#     for i in range(n):
+#         for j in range(n):
+#             kernel[i, j] = -(1-((i-k)**2+(j-k)**2)/(2.*s**2))*np.exp(-((i-k)**2+(j-k)**2)/(2.*s**2))/(pi*s**4)
+#     kernel = np.round(kernel / np.sqrt((kernel**2).sum()),3)
+#     return kernel
 
-# 定义DoG滤波核
-def DoG(k=12, s=3):
-    n = 2*k+1 # size of the kernel
-    s1, s2 = s * np.sqrt(2), s / np.sqrt(2)
-    kernel = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            kernel[i, j] = np.exp(-((i-k)**2+(j-k)**2)/(2.*s1**2))/(2*pi*s1**2)
-            - np.exp(-((i-k)**2+(j-k)**2)/(2.*s2**2))/(2*pi*s2**2)
-    kernel = np.round(kernel/np.sqrt((kernel**2).sum()), 3)
-    return kernel
+# # 定义DoG滤波核
+# def DoG(k=12, s=3):
+#     n = 2*k+1 # size of the kernel
+#     s1, s2 = s * np.sqrt(2), s / np.sqrt(2)
+#     kernel = np.zeros((n, n))
+#     for i in range(n):
+#         for j in range(n):
+#             kernel[i, j] = np.exp(-((i-k)**2+(j-k)**2)/(2.*s1**2))/(2*pi*s1**2)
+#             - np.exp(-((i-k)**2+(j-k)**2)/(2.*s2**2))/(2*pi*s2**2)
+#     kernel = np.round(kernel/np.sqrt((kernel**2).sum()), 3)
+#     return kernel
 
-s = 3 # sigma value of LoG
-im = rgb2gray(imread('Chapter05\Ch05images\dog.jpg'))
-kernel = LoG()
-outimg1 = convolve2d(im, kernel)
-pylab.subplot(221), pylab.title('LoG kernel', size=10), plot_kernel(kernel, s, 'LoG')
-pylab.subplot(222), pylab.title('Output image with LoG', size=10)
-pylab.imshow(np.clip(outimg1, 0, 1), cmap='gray') # clip the pixel values in between 0 and 1
-kernel = DoG()
-outimg2 = convolve2d(im, kernel)
-pylab.subplot(223), pylab.title('DoG kernel', size=10), plot_kernel(kernel, s, 'DoG')
-pylab.subplot(224), pylab.title('Output image with DoG', size=10)
-pylab.imshow(np.clip(outimg2, 0, 1), cmap='gray')
-pylab.tight_layout()
+# s = 3 # sigma value of LoG
+# im = rgb2gray(imread('Chapter05\Ch05images\dog.jpg'))
+# kernel = LoG()
+# outimg1 = convolve2d(im, kernel)
+# pylab.subplot(221), pylab.title('LoG kernel', size=10), plot_kernel(kernel, s, 'LoG')
+# pylab.subplot(222), pylab.title('Output image with LoG', size=10)
+# pylab.imshow(np.clip(outimg1, 0, 1), cmap='gray') # clip the pixel values in between 0 and 1
+# kernel = DoG()
+# outimg2 = convolve2d(im, kernel)
+# pylab.subplot(223), pylab.title('DoG kernel', size=10), plot_kernel(kernel, s, 'DoG')
+# pylab.subplot(224), pylab.title('Output image with DoG', size=10)
+# pylab.imshow(np.clip(outimg2, 0, 1), cmap='gray')
+# pylab.tight_layout()
+# pylab.show()
+
+# 2022/11/24 author:WH
+# scikit-image transform pyramid模块中的高斯金字塔
+from skimage.transform import pyramid_gaussian
+image = imread('Chapter01\Ch01images\Lenna.jpg')
+nrows, ncols = image.shape[:2]
+pyramid = tuple(pyramid_gaussian(image, downscale=2, multichannel=True))
+pylab.figure(figsize=(20, 5))
+i, n = 1, len(pyramid)
+for p in pyramid:
+    pylab.subplot(1, n, i), pylab.imshow(p)
+    pylab.title(str(p.shape[0]) + 'x' + str(p.shape[1])), pylab.axis('off')
+    i += 1
+pylab.suptitle('Gaussian Pyramid', size=6)
+pylab.show()
+compos_image = np.zeros((nrows, ncols+ncols//2, 3), dtype=np.double)
+compos_image[:nrows, :ncols, :] = pyramid[0]
+i_row = 0
+for p in pyramid[1:]:
+    nrows, ncols = p.shape[:2]
+    compos_image[i_row:i_row+nrows, ncols:ncols+ncols] = p
+    i_row += nrows
+fig, axes = pylab.subplots(figsize=(20, 20))
+axes.imshow(compos_image)
 pylab.show()
 
-
-
-
+# scikit-image transform pyramid模块中的拉普拉斯金字塔
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.transform import pyramid_laplacian
+from skimage.color import rgb2gray
+image = imread('Chapter01\Ch01images\Lenna.jpg')
+nrows, ncols = image.shape[:2]
+pyramid = tuple(pyramid_laplacian(image, downscale=2, multichannel=True))
+plt.figure(figsize=(20, 20))
+i, n = 1, len(pyramid)
+for p in pyramid[:-1]: # tuple中全为0的那一组显示不了
+    plt.subplot(3,3,i), plt.imshow(rgb2gray(p), cmap='gray')
+    plt.title(str(p.shape[0]) + 'x' + str(p.shape[1]))
+    plt.axis('off')
+    i += 1
+plt.suptitle('Laplacian Pyramid', size=6)
+plt.show()
+composite_image = np.zeros((nrows, ncols + ncols // 2), dtype=np.double)
+composite_image[:nrows, :ncols] = rgb2gray(pyramid[0])
+i_row = 0
+for p in pyramid[1:]:
+    n_rows, n_cols = p.shape[:2]
+    composite_image[i_row:i_row + n_rows, ncols:ncols + n_cols] = rgb2gray(p)
+    i_row += n_rows
+fig, ax = plt.subplots(figsize=(20,20))
+ax.imshow(composite_image, cmap='gray')
+plt.show()
 
 
