@@ -54,13 +54,13 @@ $$
 
 ##### 常用的一阶二阶图像边缘检测滤波器滤波核：
 
-- 逼近一阶图像倒数的滤波器：
-  - Sobel滤波器：$$Sobel_x \begin{bmatrix}1&0&-1\\2&0&-1\\1&0&-1\end{bmatrix}$$，$$Sobel_y \begin{bmatrix}1&2&1\\0&0&0\\-1&-2&-1\end{bmatrix}$$
+- 逼近一阶图像导数的滤波器：
+  - Sobel滤波器：$$Sobel_x \begin{bmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{bmatrix}$$，$$Sobel_y \begin{bmatrix}1&2&1\\0&0&0\\-1&-2&-1\end{bmatrix}$$
   - Scharr滤波器：$$Scharr_x \begin{bmatrix}3&0&-3\\10&0&-10\\3&0&-3\end{bmatrix}$$，$$Scharr_y \begin{bmatrix}3&10&3\\0&0&0\\-3&-10&-3\end{bmatrix}$$
   - Prewitt滤波器：$$Prewitt_x \begin{bmatrix}1&0&-1\\1&0&-1\\1&0&-1\end{bmatrix}$$，$$Scharr_y \begin{bmatrix}1&1&1\\0&0&0\\1&1&1\end{bmatrix}$$
   - Roberts滤波器：$$Roberts_x \begin{bmatrix}0&1\\-1&\end{bmatrix}$$，$$Roberts_y \begin{bmatrix}1&0\\0&1\end{bmatrix}$$
 
-- 逼近二阶图像倒数的滤波器：
+- 逼近二阶图像导数的滤波器：
   - Laplace滤波器：$$Laplace \begin{bmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{bmatrix}$$
 
 边缘检测的后处理步骤是非最大抑制，会使得一阶倒数的得到的边缘变薄，上述滤波器还不具备此种功能。Canny算子是一种功能先进、水平顶尖的边缘检测滤波器，可以实现对于滤波后的边缘非最大抑制处理。
@@ -111,3 +111,88 @@ def DoG(k=12, s=3):
     return kernel
 ```
 
+#### 图像金字塔
+
+- 高斯金字塔：首先利用平滑滤波器(高斯滤波器)进行图像平滑操作，然后在每一次迭代前一层图像识进行二次抽样，直至最小分辨率
+- 拉普拉斯金字塔：拉普拉斯金字塔可以从高斯金字塔的最小尺寸图象开始，通过本层图像的扩展(上采样加平滑)，将其减去下一层的高斯金字塔图像，重复迭代这个过程直至回复原始图像的大小
+
+##### 高斯金字塔的构建步骤
+
+- 从原始图像开始，使用高斯滤波器滤波平滑图像，然后对图像进行下采样
+
+- 迭代上述步骤，直至图像大小变得足够小(如$1\times1$)的层停止
+
+- 高斯金字塔图像原理图：
+
+  <img src="https://gitee.com/sirwenhao/typora-illustration/raw/master/image-20221124214338479.png" alt="image-20221124214338479" style="zoom:33%;" />
+
+- 实现代码：
+
+  ```python
+  # Image Gaussian Pyramid
+  import numpy as np
+  import matplotlib.pyplot as plt
+  from skimage.io import imread
+  from skimage.color import rgb2gray
+  from skimage.transform import pyramid_reduce, pyramid_laplacian, pyramid_expand, resize
+  
+  image = imread('')
+  
+  # Gaussian Pyramid
+  def get_gaussian_pyramid(image):
+      rows, cols, dim = image.shape
+      gaussian_pyramid = [image]
+      while rows > 1 and cols > 1:
+          image = pyramid_reduce(image, downscale=2)
+          gaussian_pyramid.append(image)
+          rows //= 2
+          cols //= 2
+      return gaussian_pyramid
+  
+  # Laplacian Pyramid
+  def get_laplacian_pyramid(image):
+      # 拉普拉斯金字塔是从高斯金字塔的最小值开始的，所以保留高斯金字塔的最小值
+      laplacian_pyramid = [gaussian_pyramid[len(gaussian_pyramid)-1]]
+      for i in range(len(gaussian_pyramid-2, -1, -1)):
+          # 使用skimage中的pyramid_expand进行上采样，并限定为指定shape
+          iamge = gaussian_pyramid[i] - resize(pyramid_expand(gaussian_pyramid[i+1]), gaussian_pyramid[i].shape)
+          laplacian_pyramid.append(np.copy(image))
+      laplacian_pyramid = laplacian_pyramid[::-1]
+      return laplacian_pyramid
+  
+  # 应用
+  gaussian_pyramid = get_gaussian_pyramid(image)
+  laplacian_pyramid = get_laplacian_pyramid(gaussian_pyramid)
+  
+  w, h = 20, 12
+  for i in range(3):
+      plt.figure(figsize=(w,h))
+      p = gaussian_pyramid[i]
+      plt.imshow(p)
+      plt.title(str(p.shape[0]) + 'x' + str(p.shape[1]), size=20)
+      plt.axis('off')
+      w, h = w / 2, h / 2
+      plt.show()
+      
+  w, h = 10, 6
+  for i in range(1,4):
+      plt.figure(figsize=(w,h))
+      p = laplacian_pyramid[i]
+      plt.imshow(rgb2gray(p), cmap='gray')
+      plt.title(str(p.shape[0]) + 'x' + str(p.shape[1]), size=20)
+      plt.axis('off')
+      w, h = w / 2, h / 2
+      plt.show()
+  ```
+
+##### 拉普拉斯金字塔构建步骤
+
+- 从高斯金字塔和高斯金字塔的最小图像开始，迭代计算当前层的图像和所获得的图像(先上采样，然后平滑高斯金字塔的上一层图像)之间的差值图像
+
+- 图像大小与原始图像大小相等时终止
+
+- 拉普拉斯金字塔原理图：
+
+  <img src="https://gitee.com/sirwenhao/typora-illustration/raw/master/image-20221124214913188.png" alt="image-20221124214913188" style="zoom:50%;" />
+
+- 具体实现代码见上述代码
