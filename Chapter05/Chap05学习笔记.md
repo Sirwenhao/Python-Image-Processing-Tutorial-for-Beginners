@@ -17,7 +17,7 @@ $\frac{\partial f}{\partial x}=f(x+1)-f(x)$对应于卷积核$\begin{bmatrix} -1
 
 拉普拉斯算子近似于图像的二阶导数，用于检测边缘，零交叉点用于标记边缘位置。
 
-拉普拉斯算子于其对应的卷积核:
+拉普拉斯算子与其对应的卷积核:
 
 $\bigtriangledown^2f=\frac{\partial^{2}f}{\partial^{2}x^2}+\frac{\partial^{2}f}{\partial^{2}y^2}=f(x+1,y)+f(x-1,y)+f(x,y+1),f(x,y-1)-4f(x,y)$对应的卷积核为：$\begin{bmatrix}0 & 1 & 0 \\1 & -4 & 1 \\ 0 & 1 & 0 \end{bmatrix}$
 
@@ -82,7 +82,7 @@ LoG(x,y) =  \nabla^2 G_{\sigma}(x,y)= \frac{\partial{G_{\sigma}(x,y)}}{\partial{
 $$
 DoG滤波器的近似计算为：
 $$
-\nabla^2{G_\sigma}\approx G_{\sigma1} - G_{\sigma_2}\\\sigma_1=\sqrt{2}\sigma,\sigma_1=\frac{\sigma}{\sqrt2}
+\nabla^2{G_\sigma}\approx G_{\sigma1} - G_{\sigma_2}\\\sigma_1=\sqrt{2}\sigma,\sigma_2=\frac{\sigma}{\sqrt2}
 $$
 两种滤波器实现代码为：
 
@@ -96,7 +96,6 @@ def LoG(k=12, s=3):
             kernel[i, j] = -(1-((i-k)**2+(j-k)**2)/(2.*s**2))*np.exp(-((i-k)**2+(j-k)**2)/(2.*s**2))/(pi*s**4)
     kernel = np.round(kernel / np.sqrt((kernel**2).sum()),3)
     return kernel
-
 
 # 2022/11/5 DoG滤波器实现
 def DoG(k=12, s=3):
@@ -113,7 +112,7 @@ def DoG(k=12, s=3):
 
 #### 图像金字塔
 
-- 高斯金字塔：首先利用平滑滤波器(高斯滤波器)进行图像平滑操作，然后在每一次迭代前一层图像识进行二次抽样，直至最小分辨率
+- 高斯金字塔：首先利用平滑滤波器(高斯滤波器)进行图像平滑操作，然后在每一次迭代前一层图像时进行二次抽样，直至最小分辨率
 - 拉普拉斯金字塔：拉普拉斯金字塔可以从高斯金字塔的最小尺寸图象开始，通过本层图像的扩展(上采样加平滑)，将其减去下一层的高斯金字塔图像，重复迭代这个过程直至回复原始图像的大小
 
 ##### 高斯金字塔的构建步骤
