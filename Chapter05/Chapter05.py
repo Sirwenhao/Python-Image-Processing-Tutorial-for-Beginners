@@ -153,57 +153,155 @@ def plot_image(image, title):
 # pylab.tight_layout()
 # pylab.show()
 
-# 2022/11/24 author:WH
-# scikit-image transform pyramid模块中的高斯金字塔
-from skimage.transform import pyramid_gaussian
-image = imread('Chapter01\Ch01images\Lenna.jpg')
-nrows, ncols = image.shape[:2]
-pyramid = tuple(pyramid_gaussian(image, downscale=2, multichannel=True))
-pylab.figure(figsize=(20, 5))
-i, n = 1, len(pyramid)
-for p in pyramid:
-    pylab.subplot(1, n, i), pylab.imshow(p)
-    pylab.title(str(p.shape[0]) + 'x' + str(p.shape[1])), pylab.axis('off')
-    i += 1
-pylab.suptitle('Gaussian Pyramid', size=6)
-pylab.show()
-compos_image = np.zeros((nrows, ncols+ncols//2, 3), dtype=np.double)
-compos_image[:nrows, :ncols, :] = pyramid[0]
-i_row = 0
-for p in pyramid[1:]:
-    nrows, ncols = p.shape[:2]
-    compos_image[i_row:i_row+nrows, ncols:ncols+ncols] = p
-    i_row += nrows
-fig, axes = pylab.subplots(figsize=(20, 20))
-axes.imshow(compos_image)
-pylab.show()
+# # 2022/11/24 author:WH
+# # scikit-image transform pyramid模块中的高斯金字塔
+# from skimage.transform import pyramid_gaussian
+# image = imread('Chapter01\Ch01images\Lenna.jpg')
+# nrows, ncols = image.shape[:2]
+# pyramid = tuple(pyramid_gaussian(image, downscale=2, multichannel=True))
+# pylab.figure(figsize=(20, 5))
+# i, n = 1, len(pyramid)
+# for p in pyramid:
+#     pylab.subplot(1, n, i), pylab.imshow(p)
+#     pylab.title(str(p.shape[0]) + 'x' + str(p.shape[1])), pylab.axis('off')
+#     i += 1
+# pylab.suptitle('Gaussian Pyramid', size=6)
+# pylab.show()
+# compos_image = np.zeros((nrows, ncols+ncols//2, 3), dtype=np.double)
+# compos_image[:nrows, :ncols, :] = pyramid[0]
+# i_row = 0
+# for p in pyramid[1:]:
+#     nrows, ncols = p.shape[:2]
+#     compos_image[i_row:i_row+nrows, ncols:ncols+ncols] = p
+#     i_row += nrows
+# fig, axes = pylab.subplots(figsize=(20, 20))
+# axes.imshow(compos_image)
+# pylab.show()
 
-# scikit-image transform pyramid模块中的拉普拉斯金字塔
+# # scikit-image transform pyramid模块中的拉普拉斯金字塔
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from skimage.transform import pyramid_laplacian
+# from skimage.color import rgb2gray
+# image = imread('Chapter01\Ch01images\Lenna.jpg')
+# nrows, ncols = image.shape[:2]
+# pyramid = tuple(pyramid_laplacian(image, downscale=2, multichannel=True))
+# plt.figure(figsize=(20, 20))
+# i, n = 1, len(pyramid)
+# for p in pyramid[:-1]: # tuple中全为0的那一组显示不了
+#     plt.subplot(3,3,i), plt.imshow(rgb2gray(p), cmap='gray')
+#     plt.title(str(p.shape[0]) + 'x' + str(p.shape[1]))
+#     plt.axis('off')
+#     i += 1
+# plt.suptitle('Laplacian Pyramid', size=6)
+# plt.show()
+# composite_image = np.zeros((nrows, ncols + ncols // 2), dtype=np.double)
+# composite_image[:nrows, :ncols] = rgb2gray(pyramid[0])
+# i_row = 0
+# for p in pyramid[1:]:
+#     n_rows, n_cols = p.shape[:2]
+#     composite_image[i_row:i_row + n_rows, ncols:ncols + n_cols] = rgb2gray(p)
+#     i_row += n_rows
+# fig, ax = plt.subplots(figsize=(20,20))
+# ax.imshow(composite_image, cmap='gray')
+# plt.show()
+
+
+# # 2022/11/26 author:WH
+# # Chapter05 Exercises
+
+# # blending images with Pyramids
+
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from skimage.io import imread
+# from skimage.color import rgb2gray
+# from skimage.transform import pyramid_reduce, pyramid_laplacian, pyramid_expand, resize
+
+# image = imread('Chapter06\CH06images\\antelope.jpg')
+# print(image.shape)
+
+# def get_gaussian_pyramid(image):
+#     rows, cols, dim = image.shape
+#     gaussian_pyramid = [image]
+#     while rows > 1 and cols > 1:
+#         image = pyramid_reduce(image, downscale=2, channel_axis=3)
+#         gaussian_pyramid.append(image)
+#         rows //= 2
+#         cols //= 2
+#     return gaussian_pyramid
+
+# def get_laplacian_pyramid(gaussian_pyramid):
+#     laplacian_pyramid = [gaussian_pyramid[len(gaussian_pyramid)-1]]
+#     for i in range(len(gaussian_pyramid)-2, -1, -1):
+#         image = gaussian_pyramid[i] - resize(pyramid_expand(gaussian_pyramid[i+1]), gaussian_pyramid[i].shape)
+#         laplacian_pyramid.append(np.copy(image))
+#     laplacian_pyramid = laplacian_pyramid[::-1]
+#     return laplacian_pyramid
+
+# gaussian_pyramid = get_gaussian_pyramid(image)
+# laplacian_pyramid = get_laplacian_pyramid(image)
+
+# w, h = 20, 10
+# for i in range(3):
+#     plt.figure(figsize=(w, h))
+#     p = gaussian_pyramid[i]
+#     plt.imshow(p)
+#     plt.title(str(p.shape[0])+'x'+str(p.shape[1]), size=8)
+#     plt.axis('off')
+#     w, h = w/2, h/2
+#     plt.show()
+
+# w, h = 10, 5
+# for i in range(1, 4):
+#     plt.figure(figsize=(w, h))
+#     p = laplacian_pyramid[i]
+#     plt.imshow(rgb2gray(p), cmap='gray')
+#     plt.title(str(p.shape[0])+'x'+str(p.shape[1]), size=8)
+#     plt.axis('off')
+#     w, h = w/2, h/2
+#     plt.show()
+
+# Marr and Hildreth's zero-crossing algorithm for edge detection
+
 import numpy as np
+from scipy import ndimage,misc
 import matplotlib.pyplot as plt
-from skimage.transform import pyramid_laplacian
 from skimage.color import rgb2gray
-image = imread('Chapter01\Ch01images\Lenna.jpg')
-nrows, ncols = image.shape[:2]
-pyramid = tuple(pyramid_laplacian(image, downscale=2, multichannel=True))
-plt.figure(figsize=(20, 20))
-i, n = 1, len(pyramid)
-for p in pyramid[:-1]: # tuple中全为0的那一组显示不了
-    plt.subplot(3,3,i), plt.imshow(rgb2gray(p), cmap='gray')
-    plt.title(str(p.shape[0]) + 'x' + str(p.shape[1]))
+
+def any_neighbor_zero(img, i, j):
+    for k in range(-1, 2):
+        for l in range(-1, 2):
+            if img[i+k, j+k] == 0:
+                return True
+    return False
+
+def zero_crossing(img):
+    img[img>0] = 1
+    img[img<0] = 0
+    out_img = np.zeros(img.shape)
+    for i in range(1, img.shape[0]-1):
+        for j in range(1, img.shape[1]-1):
+            if img[i, j] > 0 and any_neighbor_zero(img, i, j):
+                out_img[i, j] = 255
+    return out_img
+
+img = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
+print(np.max(img))
+plt.figure(figsize=(20,10))
+plt.imshow(img)
+plt.axis('off')
+plt.title('Original Image', size=8)
+
+fig = plt.figure(figsize=(25,15))
+plt.gray() # show the filtered result in grayscale
+for sigma in range(2, 10, 2):
+    plt.subplot(2,2,int(sigma/2))
+    result = ndimage.gaussian_laplace(img, sigma=sigma)
+    result = zero_crossing(result)
+    plt.imshow(result)
     plt.axis('off')
-    i += 1
-plt.suptitle('Laplacian Pyramid', size=6)
-plt.show()
-composite_image = np.zeros((nrows, ncols + ncols // 2), dtype=np.double)
-composite_image[:nrows, :ncols] = rgb2gray(pyramid[0])
-i_row = 0
-for p in pyramid[1:]:
-    n_rows, n_cols = p.shape[:2]
-    composite_image[i_row:i_row + n_rows, ncols:ncols + n_cols] = rgb2gray(p)
-    i_row += n_rows
-fig, ax = plt.subplots(figsize=(20,20))
-ax.imshow(composite_image, cmap='gray')
-plt.show()
+    plt.title('LoG with zero-crossing, sigma=' + str(sigma), size=8)
 
-
+plt.tight_layout()
+plt.show()
