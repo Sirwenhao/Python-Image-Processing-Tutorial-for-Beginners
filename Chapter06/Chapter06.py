@@ -164,27 +164,36 @@ plot_images_horizontally(im, opened, 'opening')
 closed = closing(im, struct_elem)
 plot_images_horizontally(im, closed, 'closing')
 
-# 形态学对比度增强
+# # 形态学对比度增强
 
-from skimage.filters.rank import enhance_contrast
-from skimage import exposure
-from skimage.util import img_as_ubyte
-def plot_gray_image(ax, image, title):
-    ax.imshow(image, cmap=pylab.cm.gray),
-    ax.set_title(title), ax.axis('off')
-    ax.set_adjustable('box')
+# from skimage.filters.rank import enhance_contrast
+# from skimage import exposure
+# from skimage.util import img_as_ubyte
+# def plot_gray_image(ax, image, title):
+#     ax.imshow(image, cmap=pylab.cm.gray),
+#     ax.set_title(title), ax.axis('off')
+#     ax.set_adjustable('box')
     
-image = rgb2gray(imread('Chapter06\CH06images\squirrel.jpg'))
-sigma = 0.05
-noisy_image = np.clip(image + sigma * np.random.standard_normal(image.shape), 0, 1)
-enhanced_image = enhance_contrast(img_as_ubyte(noisy_image), disk(5))
-equalized_image = exposure.equalize_adapthist(noisy_image)
+# image = rgb2gray(imread('Chapter06\CH06images\squirrel.jpg'))
+# sigma = 0.05
+# noisy_image = np.clip(image + sigma * np.random.standard_normal(image.shape), 0, 1)
+# enhanced_image = enhance_contrast(img_as_ubyte(noisy_image), disk(5))
+# equalized_image = exposure.equalize_adapthist(noisy_image)
 
-fig, axes = pylab.subplots(1, 3, figsize=[18, 7], sharex='row',sharey='row')
-axes1, axes2, axes3 = axes.ravel()
-plot_gray_image(axes1, noisy_image, 'Original')
-plot_gray_image(axes2, enhanced_image, 'Local morphological contrast enhancement')
-plot_gray_image(axes3, equalized_image, 'Adaptive Histogram equalization')
+# fig, axes = pylab.subplots(1, 3, figsize=[18, 7], sharex='row',sharey='row')
+# axes1, axes2, axes3 = axes.ravel()
+# plot_gray_image(axes1, noisy_image, 'Original')
+# plot_gray_image(axes2, enhanced_image, 'Local morphological contrast enhancement')
+# plot_gray_image(axes3, equalized_image, 'Adaptive Histogram equalization')
 
-
+# 计算局部熵
+from skimage.morphology import disk
+from skimage.filters.rank import entropy
+image = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
+fig, (axes1, axes2) = pylab.subplots(1, 2, figsize=(9, 5), sharex=True, sharey=True)
+fig.colorbar(axes1.imshow(image, cmap=pylab.cm.gray), ax=axes1)
+axes1.axis('off'), axes1.set_title('Image', size=8), axes1.set_adjustable('box')
+fig.colorbar(axes2.imshow(entropy(image, disk(5)), cmap=pylab.cm.inferno), ax=axes2)
+axes2.axis('off'), axes2.set_title('Entropy', size=8), axes2.set_adjustable('box')
+pylab.show()
 
