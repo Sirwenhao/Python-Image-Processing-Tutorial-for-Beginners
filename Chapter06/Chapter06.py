@@ -148,21 +148,21 @@ def plot_images_horizontally(original, filtered, filter_name, sz=(18,7)):
 # pylab.show()
 
 
-# 灰度级操作
-from skimage.morphology import dilation, erosion, closing, opening, square
-im = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
-struct_elem = square(5)
-eroded = erosion(im, struct_elem)
-plot_images_horizontally(im, eroded, 'erosion')
+# # 灰度级操作
+# from skimage.morphology import dilation, erosion, closing, opening, square
+# im = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
+# struct_elem = square(5)
+# eroded = erosion(im, struct_elem)
+# plot_images_horizontally(im, eroded, 'erosion')
 
-dilated =dilation(im, struct_elem)
-plot_images_horizontally(im, dilated,  'dilation')
+# dilated =dilation(im, struct_elem)
+# plot_images_horizontally(im, dilated,  'dilation')
 
-opened = opening(im, struct_elem)
-plot_images_horizontally(im, opened, 'opening')
+# opened = opening(im, struct_elem)
+# plot_images_horizontally(im, opened, 'opening')
 
-closed = closing(im, struct_elem)
-plot_images_horizontally(im, closed, 'closing')
+# closed = closing(im, struct_elem)
+# plot_images_horizontally(im, closed, 'closing')
 
 # # 形态学对比度增强
 
@@ -186,14 +186,48 @@ plot_images_horizontally(im, closed, 'closing')
 # plot_gray_image(axes2, enhanced_image, 'Local morphological contrast enhancement')
 # plot_gray_image(axes3, equalized_image, 'Adaptive Histogram equalization')
 
-# 计算局部熵
-from skimage.morphology import disk
-from skimage.filters.rank import entropy
-image = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
-fig, (axes1, axes2) = pylab.subplots(1, 2, figsize=(9, 5), sharex=True, sharey=True)
-fig.colorbar(axes1.imshow(image, cmap=pylab.cm.gray), ax=axes1)
-axes1.axis('off'), axes1.set_title('Image', size=8), axes1.set_adjustable('box')
-fig.colorbar(axes2.imshow(entropy(image, disk(5)), cmap=pylab.cm.inferno), ax=axes2)
-axes2.axis('off'), axes2.set_title('Entropy', size=8), axes2.set_adjustable('box')
-pylab.show()
+# # 计算局部熵
+# from skimage.morphology import disk
+# from skimage.filters.rank import entropy
+# image = rgb2gray(imread('Chapter06\CH06images\zebra.jpg'))
+# fig, (axes1, axes2) = pylab.subplots(1, 2, figsize=(9, 5), sharex=True, sharey=True)
+# fig.colorbar(axes1.imshow(image, cmap=pylab.cm.gray), ax=axes1)
+# axes1.axis('off'), axes1.set_title('Image', size=8), axes1.set_adjustable('box')
+# fig.colorbar(axes2.imshow(entropy(image, disk(5)), cmap=pylab.cm.inferno), ax=axes2)
+# axes2.axis('off'), axes2.set_title('Entropy', size=8), axes2.set_adjustable('box')
+# pylab.show()
 
+# # 计算形态学Beucher梯度
+# from scipy import ndimage
+# im = imread('Chapter06\CH06images\einstein.jpg')
+# im_d = ndimage.grey_dilation(im, size=(3,3))
+# im_e = ndimage.grey_erosion(im, size=(3,3))
+# im_bg = im_d - im_e
+# im_g = ndimage.morphological_gradient(im, size=(3,3))
+# pylab.gray()
+# # pylab.figure(figsize=(20,18))
+# pylab.subplot(231), pylab.imshow(im), pylab.title('original', size=8),
+# pylab.axis('off')
+# pylab.subplot(232), pylab.imshow(im_d), pylab.title('dilation', size=8),
+# pylab.axis('off')
+# pylab.subplot(233), pylab.imshow(im_e), pylab.title('erosion', size=8),
+# pylab.axis('off')
+# pylab.subplot(234), pylab.imshow(im_bg), pylab.title('Beucher gradient (bg)', size=8), pylab.axis('off')
+# pylab.subplot(235), pylab.imshow(im_g), pylab.title('ndimage gradient (g)', size=8), pylab.axis('off')
+# pylab.subplot(236), pylab.title('diff gradients (bg - g)', size=8), pylab.imshow(im_bg - im_g) 
+# pylab.axis('off')
+# pylab.show()
+
+# 形态学laplace计算
+
+from scipy import ndimage
+im = imread('Chapter06\CH06images\\tagore.png')[...,3]
+im_g = ndimage.morphological_gradient(im, size=(3,3))
+im_l = ndimage.morphological_laplace(im, size=(5,5))
+# pylab.figure(figsize=(15,10))
+pylab.subplot(121), pylab.title('ndimage morphological laplace', size=8), pylab.imshow(im_l)
+pylab.axis('off')
+pylab.subplot(122), pylab.title('ndimage morphological gradient', size=8),
+pylab.imshow(im_g)
+pylab.axis('off')
+pylab.show()
