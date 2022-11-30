@@ -225,7 +225,8 @@ im = imread('Chapter06\CH06images\\tagore.png')[...,3]
 im_g = ndimage.morphological_gradient(im, size=(3,3))
 im_l = ndimage.morphological_laplace(im, size=(5,5))
 # pylab.figure(figsize=(15,10))
-pylab.subplot(121), pylab.title('ndimage morphological laplace', size=8), pylab.imshow(im_l)
+pylab.subplot(121), pylab.title('ndimage morphological laplace', size=8)
+pylab.imshow(im_l)
 pylab.axis('off')
 pylab.subplot(122), pylab.title('ndimage morphological gradient', size=8),
 pylab.imshow(im_g)
