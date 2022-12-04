@@ -135,14 +135,27 @@ from skimage.transform import warp,SimilarityTransform, AffineTransform, resize
 #         axes[idx+1].add_patch(col), axes[idx+1].set_axis_off()
 # pylab.show()
 
-# 基于scikit-image特征模块的hog()函数计算HOG描述符并可视化
-from skimage.feature import hog
-from skimage import exposure
-image = rgb2gray(imread('Chapter07\CH07images\cameraman.jpg'))
-fd, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),cells_per_block=(1, 1),visualize=True)
-print(image.shape, len(fd))
-fig, (axes1, axes2) = pylab.subplots(1,2,figsize=(15,10),sharex=True,sharey=True)
-axes1.axis('off'), axes1.imshow(image, cmap=pylab.cm.gray),axes1.set_title('Input image')
-hog_image_rescaled = exposure.rescale_intensity(hog_image, in_range=(0, 10))
-axes2.axis('off'),axes2.imshow(hog_image_rescaled, cmap=pylab.cm.gray),axes2.set_title('Histogram of Oriented Gradients')
-pylab.show()
+# # 基于scikit-image特征模块的hog()函数计算HOG描述符并可视化
+# from skimage.feature import hog
+# from skimage import exposure
+# image = rgb2gray(imread('Chapter07\CH07images\cameraman.jpg'))
+# fd, hog_image = hog(image, orientations=8, pixels_per_cell=(16, 16),cells_per_block=(1, 1),visualize=True)
+# print(image.shape, len(fd))
+# fig, (axes1, axes2) = pylab.subplots(1,2,figsize=(15,10),sharex=True,sharey=True)
+# axes1.axis('off'), axes1.imshow(image, cmap=pylab.cm.gray),axes1.set_title('Input image')
+# hog_image_rescaled = exposure.rescale_intensity(hog_image, in_range=(0, 10))
+# axes2.axis('off'),axes2.imshow(hog_image_rescaled, cmap=pylab.cm.gray),axes2.set_title('Histogram of Oriented Gradients')
+# pylab.show()
+
+# SIFT算法
+import cv2
+# print(cv2.__version__) # 4.6.0
+img = cv2.imread('Chapter07\CH07images\monalisa.jpg')
+img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+sift = cv2.xfeatures2d.SIFT_create()
+kp = sift.detect(img_gray, None)
+img = cv2.drawKeypoints(img, kp, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+# cv2.imshow('Image', img),cv2.waitKey(0)
+cv2.imwrite('Chapter07\CH07images\me5_keypoints', img)
+kp, des = sift.detectAndCompute(img_gray, None)
+
